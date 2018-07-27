@@ -21,7 +21,7 @@ public class PullRemoteCommits {
         }
     }
 
-    public static void pull(Repository existingRepository, String remoteBranch) throws IOException, GitAPIException {
+    public static void pull(Repository existingRepository, String branch) throws GitAPIException {
         System.out.println("Starting pull...");
         //need to set to "no", or it will meet com.jcraft.jsch.JSchException: UnknownHostKey
         SshSessionFactory.setInstance(new JschConfigSessionFactory() {
@@ -30,30 +30,11 @@ public class PullRemoteCommits {
             }
         });
         try (Git git = new Git(existingRepository)) {
-            boolean createBranchInLocalOrNot = isCreateBranchInLocalOrNot(remoteBranch, git);
-            //checkout or create(if is a new branch, need to create in local, then
-            //will checkout it, need setCreateBranch(true)) remote branch in local first
-            git.checkout().
-                    setCreateBranch(createBranchInLocalOrNot).
-                    setName(remoteBranch).
-                    setUpstreamMode(CreateBranchCommand.SetupUpstreamMode.TRACK).
-                    setStartPoint("origin/" + remoteBranch).
-                    call();
+            CheckoutBranch.checkout(existingRepository, branch);
             PullCommand pullCommand = git.pull();
             pullCommand.call();
             System.out.println("End pull...");
         }
     }
 
-    private static boolean isCreateBranchInLocalOrNot(String remoteBranch, Git git) throws GitAPIException {
-        boolean createBranchInLocalOrNot = true;
-        List<Ref> refs = git.branchList().setListMode(ListBranchCommand.ListMode.ALL).call();
-        for (Ref ref : refs) {
-            if(ref.getName().contains(remoteBranch)){
-                createBranchInLocalOrNot = false;
-                break;
-            }
-        }
-        return createBranchInLocalOrNot;
-    }
 }
