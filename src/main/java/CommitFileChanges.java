@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 
 public class CommitFileChanges {
     public static void commit(Repository existingRepository, List<String> pomFilesForCommit) throws GitAPIException, IOException {
+        //todo:change to aspect for log
         System.out.println("Starting commit changes...");
         try (Git git = new Git(existingRepository)) {
             for (String pomFile : pomFilesForCommit) {
@@ -24,14 +25,14 @@ public class CommitFileChanges {
                 git.commit()
                         .setMessage("auto update pom version")
                         .call();
-                sendEmail(existingRepository, pomFilesForCommit);
+                constructEmailContentAndSend(existingRepository, pomFilesForCommit);
             }
         }
         System.out.println();
         System.out.println("End commit changes to local...");
     }
 
-    private static void sendEmail(Repository existingRepository, List<String> pomFilesForCommit) throws IOException {
+    private static void constructEmailContentAndSend(Repository existingRepository, List<String> pomFilesForCommit) throws IOException {
         String commitMsg = "Committed followings files' changes " + " to repository at " + existingRepository.getDirectory()
                 + " for remote branch <font style='background-color:yellow'>" + existingRepository.getBranch() + "</font></br></br>";
         System.out.println(commitMsg);

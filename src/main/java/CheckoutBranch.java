@@ -12,6 +12,7 @@ import org.eclipse.jgit.transport.SshSessionFactory;
 import java.util.List;
 
 public class CheckoutBranch {
+
     public static void checkout(Repository existingRepository, String branch) throws GitAPIException {
         //need to set to "no", or it will meet com.jcraft.jsch.JSchException: UnknownHostKey
         SshSessionFactory.setInstance(new JschConfigSessionFactory() {
