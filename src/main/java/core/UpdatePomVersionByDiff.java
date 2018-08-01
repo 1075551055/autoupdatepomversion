@@ -1,3 +1,5 @@
+package core;
+
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
@@ -12,6 +14,7 @@ import org.eclipse.jgit.revwalk.filter.CommitTimeRevFilter;
 import org.eclipse.jgit.revwalk.filter.RevFilter;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
+import pojo.GitParameter;
 import util.UpdatePomVersionUtil;
 
 import java.io.File;

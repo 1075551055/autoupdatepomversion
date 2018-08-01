@@ -1,3 +1,5 @@
+package core;
+
 import org.eclipse.jgit.api.CreateBranchCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.PushCommand;
