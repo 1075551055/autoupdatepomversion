@@ -137,7 +137,6 @@ public class UpdatePomVersionByDiff {
     }
 
     private static List<DiffEntry> getCommitChanges(Repository existingRepository, Date since, Date until) throws IOException {
-        //        Ref head = existingRepo.exactRef("refs/heads/water_test");
         // a RevWalk allows to walk over commits based on some filtering that is defined
         try (RevWalk walk = new RevWalk(existingRepository)) {
             ObjectId head = existingRepository.resolve(Constants.HEAD);
@@ -169,9 +168,6 @@ public class UpdatePomVersionByDiff {
                     df.setDiffComparator(RawTextComparator.DEFAULT);
                     df.setDetectRenames(true);
                     List<DiffEntry> diffEntries = df.scan(nextCommit.getTree(), headCommit.getTree());
-//                    for (DiffEntry diff : diffEntries) {
-//                        System.out.println(MessageFormat.format("({0} {1} {2}", diff.getChangeType().name(), diff.getNewMode().getBits(), diff.getNewPath()));
-//                    }
                     return diffEntries;
 
                 }
@@ -182,9 +178,6 @@ public class UpdatePomVersionByDiff {
                 df.setDiffComparator(RawTextComparator.DEFAULT);
                 df.setDetectRenames(true);
                 List<DiffEntry> diffs = df.scan(earlierCommit.getTree(), headCommit.getTree());
-//                for (DiffEntry diff : diffs) {
-//                    System.out.println(MessageFormat.format("({0} {1} {2}", diff.getChangeType().name(), diff.getNewMode().getBits(), diff.getNewPath()));
-//                }
                 walk.dispose();
                 return diffs;
             }
