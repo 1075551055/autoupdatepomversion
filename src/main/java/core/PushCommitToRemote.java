@@ -32,7 +32,7 @@ public class PushCommitToRemote {
     }
 
     private static void pushChangesToUpstream(Repository existingRepository, String gitUrlForCentral, String centralBranchForPush) throws GitAPIException, URISyntaxException, IOException {
-        System.out.println("Starting push changes to HKG git server");
+        System.out.println("Starting push changes to central git server");
         try (Git git = new Git(existingRepository)) {
             // add remote repo:
             RemoteAddCommand remoteAddCommand = git.remoteAdd();
@@ -50,7 +50,7 @@ public class PushCommitToRemote {
             // you can add more settings here if needed
             pushCommand.call();
         }
-        System.out.println("End push changes to HKG git server...");
+        System.out.println("End push changes to central git server...");
     }
 
     private static void pushChangesToOrigin(Repository existingRepository, String gitUrlForOrigin) throws GitAPIException, URISyntaxException, IOException {
