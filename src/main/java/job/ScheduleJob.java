@@ -20,6 +20,7 @@ public class ScheduleJob {
         String gitUrlForOrigin = args[3];
         String gitUrlForCentral = args[4];
 
+////      for local test:
 //        String gitUrlForCentral = "git@zha-ir4-ci1-w10:dsh/demo.git";
 //        String gitUrlForOrigin = "git@zha-ir4-ci1-w10:liwa/demo.git";
 //        String centralBranchForPush = "upstream/AutoUpdatePomRemote";
