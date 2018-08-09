@@ -30,8 +30,7 @@ public class CommitFileChanges {
                 constructEmailContentAndSend(existingRepository, pomFilesForCommit);
             }
         }
-        System.out.println();
-        System.out.println("End commit changes to local...");
+        System.out.println("\r\nEnd commit changes to local...");
     }
 
     private static void constructEmailContentAndSend(Repository existingRepository, List<String> pomFilesForCommit) throws IOException {

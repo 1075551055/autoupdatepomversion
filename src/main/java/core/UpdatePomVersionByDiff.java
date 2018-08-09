@@ -24,59 +24,39 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 public class UpdatePomVersionByDiff {
-    private static final List<String> PRS_POM_FOR_UPDATE = Arrays.asList(
-            "WLS_PRS_DSH/pom_deploy.xml",
-            "WLS_PRS_DSH/war_file/pom.xml",
-            "WLS_PRS_DSH/ear_file/pom.xml");
-    private static final List<String> DOM_POM_FOR_UPDATE = Arrays.asList(
-            "WLS_DOM_DSH/pom_deploy.xml",
-            "WLS_DOM_DSH/pom_deploy_BE.xml",
-            "WLS_DOM_DSH/pom_deploy_CA.xml",
-            "WLS_DOM_DSH/war_file/pom.xml",
-            "WLS_DOM_DSH/ear_file/pom.xml",
-            "WLS_DOM_DSHBE/pom.xml",
-            "WLS_DOM_DSHBE/ear_file/pom.xml",
-            "WLS_DOM_DSHCA/pom.xml",
-            "WLS_DOM_DSHCA/ear_file/pom.xml");
-    private static final String DSH_COMMON_POM_FOR_UPDATE = "DSH_Common/pom.xml";
-    private static final String DSH_JAXB_POM_FOR_UPDATE = "DSH_JAXB/pom.xml";
-    private static final String PROJECT_ROOT_POM = "pom.xml";
 
     public static void main(String[] args) throws IOException, GitAPIException, URISyntaxException {
         Date since = new Date();
         Calendar calendarForSince = Calendar.getInstance();
         calendarForSince.setTime(since);
-//        calendarForSince.set(Calendar.DATE, calendarForSince.get(Calendar.DATE) - 1);
-        calendarForSince.set(Calendar.HOUR_OF_DAY, 15);
+        calendarForSince.set(Calendar.HOUR_OF_DAY, 10);
         calendarForSince.set(Calendar.MINUTE, 17);
         since = calendarForSince.getTime();
 
         Date until = new Date();
         Calendar calendarForUtil = Calendar.getInstance();
         calendarForUtil.setTime(until);
-        calendarForUtil.set(Calendar.HOUR, 15);
+        calendarForUtil.set(Calendar.HOUR, 19);
         calendarForUtil.set(Calendar.MINUTE, 40);
         until = calendarForUtil.getTime();
 
-        String hkgGitUrl = "git@zha-ir4-ci1-w10:dsh/demo.git";
-        String originGitUrl = "git@zha-ir4-ci1-w10:liwa/demo.git";
-        String hkgRemoteRepository = "upstream";
-        update(new GitParameter("C:/gitlab/iris4_dsh_deploy", "IRIS4_R24.1_POST_Aug05", hkgRemoteRepository, originGitUrl, hkgGitUrl, since, until));
+        String gitUrlForCentral = "git@zha-ir4-ci1-w10:dsh/demo.git";
+        String gitUrlForOrigin = "git@zha-ir4-ci1-w10:liwa/demo.git";
+        String centralBranchForPush = "upstream/AutoUpdatePomRemote";
+        String projectRootPath = "C:\\gitlab\\iris4_dsh_demo";
+        String originBranchForUpdatePomVersion = "AutoUpdatePomTest";
+        update(new GitParameter(projectRootPath, originBranchForUpdatePomVersion, gitUrlForOrigin, gitUrlForCentral, centralBranchForPush, since, until));
     }
 
     public static void update(GitParameter gitParameter) throws IOException, GitAPIException, URISyntaxException {
-        gitParameter.setProjectRootPath(gitParameter.getProjectRootPath().replace("\\\\", "/"));
-        if (!gitParameter.getProjectRootPath().endsWith("/")) {
-            gitParameter.setProjectRootPath(gitParameter.getProjectRootPath() + "/");
-        }
         try (Repository existingRepository = new FileRepositoryBuilder()
                 .setGitDir(new File(gitParameter.getProjectRootPath() + ".git"))
                 .build()) {
             //it will checkout remoteBranch first and then pull changes
-            PullRemoteCommits.pull(existingRepository, gitParameter.getRemoteBranch());
+            PullRemoteCommits.pull(existingRepository, gitParameter.getOriginBranchForUpdatePomVersion());
             List<String> pomFilesForPush = updatePomVersion(existingRepository, gitParameter.getProjectRootPath(), gitParameter.getSince(), gitParameter.getUntil());
             CommitFileChanges.commit(existingRepository, pomFilesForPush);
-            PushCommitToRemote.pushChangesToRemote(existingRepository, gitParameter.getOriginGitUrl(), gitParameter.getHkgGitUrl(), gitParameter.getHkgRemoteRepository());
+            PushCommitToRemote.pushChangesToRemote(existingRepository, gitParameter.getGitUrlForOrigin(), gitParameter.getGitUrlForCentral(), gitParameter.getCentralBranchForPush());
         }
     }
 
@@ -89,7 +69,6 @@ public class UpdatePomVersionByDiff {
         boolean needUpdateDSHCommonPom = false;
         boolean needUpdateDSHJaxbPom = false;
         for (DiffEntry diff : commitChanges) {
-            //todo:filter update pom commit
             if (diff.getNewPath().contains("WLS_PRS_DSH/war_file") && !diff.getNewPath().contains("WLS_PRS_DSH/war_file/src/test")
                     && !matchPomFile(diff)) {
                 needUpdatePrsPom = true;
@@ -188,4 +167,22 @@ public class UpdatePomVersionByDiff {
     private static boolean matchPomFile(DiffEntry diffEntry) {
         return Pattern.compile("pom(.*)\\.xml").matcher(diffEntry.getNewPath()).find();
     }
+
+    private static final List<String> PRS_POM_FOR_UPDATE = Arrays.asList(
+            "WLS_PRS_DSH/pom_deploy.xml",
+            "WLS_PRS_DSH/war_file/pom.xml",
+            "WLS_PRS_DSH/ear_file/pom.xml");
+    private static final List<String> DOM_POM_FOR_UPDATE = Arrays.asList(
+            "WLS_DOM_DSH/pom_deploy.xml",
+            "WLS_DOM_DSH/pom_deploy_BE.xml",
+            "WLS_DOM_DSH/pom_deploy_CA.xml",
+            "WLS_DOM_DSH/war_file/pom.xml",
+            "WLS_DOM_DSH/ear_file/pom.xml",
+            "WLS_DOM_DSHBE/pom.xml",
+            "WLS_DOM_DSHBE/ear_file/pom.xml",
+            "WLS_DOM_DSHCA/pom.xml",
+            "WLS_DOM_DSHCA/ear_file/pom.xml");
+    private static final String DSH_COMMON_POM_FOR_UPDATE = "DSH_Common/pom.xml";
+    private static final String DSH_JAXB_POM_FOR_UPDATE = "DSH_JAXB/pom.xml";
+    private static final String PROJECT_ROOT_POM = "pom.xml";
 }

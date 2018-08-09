@@ -22,14 +22,10 @@ public class UpdatePomVersionUtil {
     }
 
     private static void writeDSHCommonOrJaxbPomVersion(String projectRootPath, String childModulePomPath, String childModulePomConfig) throws IOException {
-        projectRootPath = projectRootPath.replace("\\\\", "/");
-        String projectRootPomPath = projectRootPath + "pom.xml";
-        if (!projectRootPath.endsWith("/")) {
-            projectRootPomPath = projectRootPath + "/" + "pom.xml";
-        }
+        String moduleRootPomPath = projectRootPath + "pom.xml";
         //first update DSH_Common or DSH_Jaxb pom.xml version
         List<String> dshCommonOrJaxbPomVersionListAfterUpdated = updateNormalPomVersion(projectRootPath, Collections.singletonList(childModulePomPath));
-        try (RandomAccessFile randomAccessFile = new RandomAccessFile(projectRootPomPath, "rw")) {
+        try (RandomAccessFile randomAccessFile = new RandomAccessFile(moduleRootPomPath, "rw")) {
             boolean existDSHCommonOrJaxb = false;
             String line;
             long lastPoint = 0;
@@ -50,13 +46,9 @@ public class UpdatePomVersionUtil {
     }
 
     public static List<String> updateNormalPomVersion(String projectRootPath, List<String> pomPaths) throws IOException {
-        projectRootPath = projectRootPath.replace("\\\\", "/");
         List<String> pomVersionListAfterUpdated = new ArrayList<>();
         for (String pomPath : pomPaths) {
             String fullPomPath = projectRootPath + pomPath;
-            if (!projectRootPath.endsWith("/")) {
-                fullPomPath = projectRootPath + "/" + pomPath;
-            }
             try (RandomAccessFile randomAccessFile = new RandomAccessFile(fullPomPath, "rw")) {
                 String line;
                 boolean hasParent = false;

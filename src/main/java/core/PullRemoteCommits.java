@@ -23,18 +23,12 @@ public class PullRemoteCommits {
 
     public static void pull(Repository existingRepository, String branch) throws GitAPIException {
         System.out.println("Starting pull...");
-        //need to set to "no", or it will meet com.jcraft.jsch.JSchException: UnknownHostKey
-        SshSessionFactory.setInstance(new JschConfigSessionFactory() {
-            public void configure(OpenSshConfig.Host hc, Session session) {
-                session.setConfig("StrictHostKeyChecking", "no");
-            }
-        });
         try (Git git = new Git(existingRepository)) {
             CheckoutBranch.checkout(existingRepository, branch);
             PullCommand pullCommand = git.pull();
             pullCommand.call();
-            System.out.println("End pull...");
         }
+        System.out.println("End pull...");
     }
 
 }

@@ -10,22 +10,24 @@ import java.util.TimerTask;
 
 public class ScheduleJob {
     public static void main(String[] args) {
-        //java -jar autoupdatepom.jar C:/gitlab/demo AutoUpdatePomTest2 upstream git@zha-ir4-ci1-w10:liwa/demo.git git@zha-ir4-ci1-w10:test/demo.git
+        //java -jar autoupdatepom.jar C:/gitlab/demo AutoUpdatePomTest upstream/AutoUpdatePomRemote git@zha-ir4-ci1-w10:liwa/demo.git git@zha-ir4-ci1-w10:test/demo.git
         if (args.length < 5) {
             throw new RuntimeException("Arguments are not enough, need 5 arguments~");
         }
         String projectRootPath = args[0];
-        projectRootPath = projectRootPath.replace("\\\\", "/");
-        if (!projectRootPath.endsWith("/")) {
-            projectRootPath = projectRootPath + "/";
-        }
-        String remoteBranch = args[1];
-        String hkgRemoteRepository = args[2];
-        String originGitUrl = args[3];
-        String hkgGitUrl = args[4];
+        String originBranchForUpdatePomVersion = args[1];
+        String centralBranchForPush = args[2];
+        String gitUrlForOrigin = args[3];
+        String gitUrlForCentral = args[4];
 
-        startNoonSchedule(new GitParameter(projectRootPath, remoteBranch, originGitUrl, hkgGitUrl, hkgRemoteRepository, null, null));
-        startAfternoonSchedule(new GitParameter(projectRootPath, remoteBranch, originGitUrl, hkgGitUrl, hkgRemoteRepository, null, null));
+//        String gitUrlForCentral = "git@zha-ir4-ci1-w10:dsh/demo.git";
+//        String gitUrlForOrigin = "git@zha-ir4-ci1-w10:liwa/demo.git";
+//        String centralBranchForPush = "upstream/AutoUpdatePomRemote";
+//        String projectRootPath = "C:/gitlab/iris4_dsh_demo";
+//        String originBranchForUpdatePomVersion = "AutoUpdatePomTest";
+
+        startNoonSchedule(new GitParameter(projectRootPath, originBranchForUpdatePomVersion, gitUrlForOrigin, gitUrlForCentral, centralBranchForPush, null, null));
+        startAfternoonSchedule(new GitParameter(projectRootPath, originBranchForUpdatePomVersion, gitUrlForOrigin, gitUrlForCentral, centralBranchForPush, null, null));
 
     }
 

@@ -4,41 +4,45 @@ import java.util.Date;
 
 public class GitParameter {
     private String projectRootPath;
-    private String remoteBranch;
-    private String originGitUrl;
-    private String hkgGitUrl;
-    private String hkgRemoteRepository;
+    private String originBranchForUpdatePomVersion;
+    private String gitUrlForOrigin;
+    private String gitUrlForCentral;
+    private String centralBranchForPush;
     private Date since;
     private Date until;
 
-    public GitParameter(String projectRootPath, String remoteBranch, String originGitUrl, String hkgGitUrl, String hkgRemoteRepository, Date since, Date until) {
+    public GitParameter(String projectRootPath, String originBranchForUpdatePomVersion, String gitUrlForOrigin, String gitUrlForCentral, String centralBranchForPush, Date since, Date until) {
         this.projectRootPath = projectRootPath;
-        this.remoteBranch = remoteBranch;
-        this.originGitUrl = originGitUrl;
-        this.hkgGitUrl = hkgGitUrl;
-        this.hkgRemoteRepository = hkgRemoteRepository;
+        this.originBranchForUpdatePomVersion = originBranchForUpdatePomVersion;
+        this.gitUrlForOrigin = gitUrlForOrigin;
+        this.gitUrlForCentral = gitUrlForCentral;
+        this.centralBranchForPush = centralBranchForPush;
         this.since = since;
         this.until = until;
     }
 
     public String getProjectRootPath() {
+        projectRootPath = projectRootPath.replace("\\\\", "/");
+        if (!projectRootPath.endsWith("/")) {
+            projectRootPath = projectRootPath + "/";
+        }
         return projectRootPath;
     }
 
-    public String getRemoteBranch() {
-        return remoteBranch;
+    public String getOriginBranchForUpdatePomVersion() {
+        return originBranchForUpdatePomVersion;
     }
 
-    public String getOriginGitUrl() {
-        return originGitUrl;
+    public String getGitUrlForOrigin() {
+        return gitUrlForOrigin;
     }
 
-    public String getHkgGitUrl() {
-        return hkgGitUrl;
+    public String getGitUrlForCentral() {
+        return gitUrlForCentral;
     }
 
-    public String getHkgRemoteRepository() {
-        return hkgRemoteRepository;
+    public String getCentralBranchForPush() {
+        return centralBranchForPush;
     }
 
     public Date getSince() {
